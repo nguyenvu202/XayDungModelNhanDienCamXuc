@@ -38,13 +38,13 @@ pip install
 flask
 mysql.connector
 tensorflow
-pickle
 numpy
-requests
 flask_cors
 
 ```
-
+- Nếu gặp lỗi "Authentication plugin 'caching_sha2_password' is not supported", chạy lệnh:
+```bash
+pip install mysql-connector-python --upgrade
 ## Cấu hình Database
 
 1. **MySQL Database**:
