@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Phân tích đánh giá</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6e9f7 100%);
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+        }
+        .modern-header {
+            background: linear-gradient(90deg, #3a5a9f 0%, #4a6cf7 100%);
+            color: white;
+            padding: 32px 0 24px 0;
+            border-radius: 0 0 24px 24px;
+            box-shadow: 0 4px 16px rgba(74,108,247,0.08);
+            margin-bottom: 32px;
+            text-align: center;
+            position: relative;
+        }
+        .modern-header .fa-chart-line {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+        .modern-header h1 {
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 0;
+        }
+        .sentiment-filter {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .btn-group .btn {
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .btn-group .btn:hover, .btn-group .active-sentiment {
+            box-shadow: 0 2px 8px rgba(74,108,247,0.15);
+            transform: translateY(-2px) scale(1.04);
+        }
+        .wordcloud-container {
+            background: white;
+            padding: 28px 24px;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(74,108,247,0.08);
+            margin-bottom: 28px;
+        }
+        .wordcloud-image {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(74,108,247,0.07);
+        }
+        .frequency-list {
+            margin-top: 18px;
+            padding: 12px 10px;
+            background: #f4f7fe;
+            border-radius: 10px;
+        }
+        .frequency-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 7px 0;
+            border-bottom: 1px solid #e3e6f0;
+            font-size: 1.05em;
+        }
+        .frequency-item:last-child {
+            border-bottom: none;
+        }
+        .frequency-item .fa-hashtag {
+            color: #4a6cf7;
+            margin-right: 6px;
+        }
+        .reviews-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .review-card {
+            background: white;
+            padding: 18px 16px;
+            margin-bottom: 14px;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(74,108,247,0.07);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .review-card:hover {
+            box-shadow: 0 6px 24px rgba(74,108,247,0.13);
+            transform: translateY(-2px) scale(1.01);
+        }
+        .review-author {
+            font-weight: bold;
+            color: #4a6cf7;
+            display: flex;
+            align-items: center;
+        }
+        .review-author .fa-user-circle {
+            margin-right: 7px;
+            font-size: 1.2em;
+        }
+        .review-text {
+            margin: 10px 0 6px 0;
+            font-size: 1.08em;
+        }
+        .review-confidence {
+            font-size: 0.95em;
+            color: #6c757d;
+        }
+        .sentiment-icon {
+            margin-right: 6px;
+            font-size: 1.1em;
+        }
+        .footer-modern {
+            margin-top: 40px;
+            padding: 18px 0 10px 0;
+            background: linear-gradient(90deg, #4a6cf7 0%, #6a82fb 100%);
+            color: white;
+            border-radius: 18px 18px 0 0;
+            text-align: center;
+            font-size: 1.05em;
+            letter-spacing: 0.5px;
+            box-shadow: 0 -2px 12px rgba(74,108,247,0.07);
+        }
+        .chart-container {
+            background: white;
+            padding: 28px 24px;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(74,108,247,0.08);
+            margin-bottom: 28px;
+            height: 400px;
+            position: relative;
+        }
+        @media (max-width: 768px) {
+            .modern-header {
+                padding: 24px 0 16px 0;
+            }
+            .wordcloud-container {
+                padding: 16px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="modern-header">
+        <i class="fa-solid fa-chart-line"></i>
+        <h1>Dashboard Phân tích đánh giá</h1>
+    </div>
+    <div class="container">
+        <div class="sentiment-filter">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-primary" onclick="updateContent()"><i class="fa-solid fa-globe sentiment-icon"></i>Tất cả</button>
+                <button type="button" class="btn btn-success" onclick="updateContent('Tích cực')"><i class="fa-solid fa-face-smile sentiment-icon"></i>Tích cực</button>
+                <button type="button" class="btn btn-warning" onclick="updateContent('Trung lập')"><i class="fa-solid fa-meh sentiment-icon"></i>Trung lập</button>
+                <button type="button" class="btn btn-danger" onclick="updateContent('Tiêu cực')"><i class="fa-solid fa-face-frown sentiment-icon"></i>Tiêu cực</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="chart-container">
+                    <h3><i class="fa-solid fa-chart-bar"></i> Phân bố đánh giá</h3>
+                    <canvas id="sentimentChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="wordcloud-container">
+                    <h3><i class="fa-solid fa-cloud"></i> Word Cloud Đánh giá</h3>
+                    <img id="wordcloud-image" class="wordcloud-image" src="" alt="Word Cloud">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="wordcloud-container">
+                    <h3><i class="fa-solid fa-hashtag"></i> Top Từ Phổ Biến</h3>
+                    <div id="frequency-list" class="frequency-list">
+                        <!-- Tần suất từ sẽ được hiển thị ở đây -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="wordcloud-container">
+                    <h3><i class="fa-solid fa-comments"></i> Nội dung đánh giá</h3>
+                    <div id="reviews-container" class="reviews-container">
+                        <!-- Nội dung đánh giá sẽ được hiển thị ở đây -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-modern">
+        <span>© 2024 Dashboard Phân tích đánh giá </span>
+    </div>
+    <script>
+        let currentSentiment = null;
+        let sentimentChart = null;
+
+        // Hàm cập nhật biểu đồ
+        function updateChart(data) {
+            const ctx = document.getElementById('sentimentChart').getContext('2d');
+            
+            if (sentimentChart) {
+                sentimentChart.destroy();
+            }
+
+            sentimentChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Tích cực', 'Tiêu cực'],
+                    datasets: [{
+                        label: 'Số lượng đánh giá',
+                        data: [data.positive || 0, data.negative || 0],
+                        backgroundColor: [
+                            'rgba(40, 167, 69, 0.8)',  // Màu xanh lá cho tích cực
+                            'rgba(220, 53, 69, 0.8)'   // Màu đỏ cho tiêu cực
+                        ],
+                        borderColor: [
+                            'rgb(40, 167, 69)',
+                            'rgb(220, 53, 69)'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        barThickness: 60,
+                        maxBarThickness: 80
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#333',
+                            bodyColor: '#666',
+                            borderColor: '#ddd',
+                            borderWidth: 1,
+                            padding: 12,
+                            boxPadding: 6,
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw || 0;
+                                    return `Số lượng: ${value} đánh giá`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                },
+                                stepSize: 1
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+        }
+
+        // Hàm cập nhật nội dung
+        function updateContent(sentiment = null) {
+            document.querySelectorAll('.btn-group .btn').forEach(btn => {
+                btn.classList.remove('active-sentiment');
+            });
+            if (sentiment) {
+                event.target.classList.add('active-sentiment');
+            } else {
+                document.querySelector('.btn-group .btn-primary').classList.add('active-sentiment');
+            }
+            currentSentiment = sentiment;
+            updateWordcloud(sentiment);
+            updateReviews(sentiment);
+            updateChartData();
+        }
+
+        // Hàm cập nhật dữ liệu biểu đồ
+        function updateChartData() {
+            fetch('http://localhost:5001/get_sentiment_stats')
+                .then(response => response.json())
+                .then(data => {
+                    updateChart(data);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Hàm cập nhật wordcloud
+        function updateWordcloud(sentiment = null) {
+            let url = '/get_wordcloud';
+            if (sentiment) {
+                url += `?sentiment=${encodeURIComponent(sentiment)}`;
+            }
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.image) {
+                        document.getElementById('wordcloud-image').src = `data:image/png;base64,${data.image}`;
+                        // Hiển thị tần suất từ
+                        const frequencyList = document.getElementById('frequency-list');
+                        frequencyList.innerHTML = '';
+                        Object.entries(data.frequencies)
+                            .sort((a, b) => b[1] - a[1])
+                            .forEach(([word, count]) => {
+                                const div = document.createElement('div');
+                                div.className = 'frequency-item';
+                                div.innerHTML = `
+                                    <span><i class="fa-solid fa-hashtag"></i> ${word}</span>
+                                    <span class="badge bg-primary">${count}</span>
+                                `;
+                                frequencyList.appendChild(div);
+                            });
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        // Hàm cập nhật nội dung đánh giá
+        function updateReviews(sentiment = null) {
+            let url = '/get_reviews';
+            if (sentiment) {
+                url += `?sentiment=${encodeURIComponent(sentiment)}`;
+            }
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const reviewsContainer = document.getElementById('reviews-container');
+                    reviewsContainer.innerHTML = '';
+                    if (data.reviews && data.reviews.length > 0) {
+                        data.reviews.forEach(review => {
+                            const reviewCard = document.createElement('div');
+                            reviewCard.className = 'review-card';
+                            reviewCard.innerHTML = `
+                                <div class="review-author"><i class="fa-solid fa-user-circle"></i> ${review.author}</div>
+                                <div class="review-text">${review.text}</div>
+                                <div class="review-confidence">Độ tin cậy: ${review.confidence}</div>
+                            `;
+                            reviewsContainer.appendChild(reviewCard);
+                        });
+                    } else {
+                        reviewsContainer.innerHTML = '<p class="text-center">Không có đánh giá nào</p>';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        // Cập nhật nội dung mỗi 1 phút
+        function startAutoUpdate() {
+            updateContent();
+            setInterval(() => updateContent(currentSentiment), 60000);
+        }
+        // Khởi tạo khi trang được tải
+        document.addEventListener('DOMContentLoaded', startAutoUpdate);
+    </script>
+</body>
+</html> 

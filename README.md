@@ -40,7 +40,8 @@ mysql.connector
 tensorflow
 numpy
 flask_cors
-
+wordcloud
+nltk
 ```
 - Nếu gặp lỗi "Authentication plugin 'caching_sha2_password' is not supported", chạy lệnh:
 ```bash
@@ -75,16 +76,18 @@ ollama pull llama3.1:8b
 
 ```
 project/
-├── app.py
-├── requirements.txt
-├── README.md
-├── model/
+├── app.py                  # Server chính cho chatbot và phân tích đánh giá
+├── dashboard_server.py     # Server cho dashboard phân tích
+├── requirements.txt        # Danh sách các thư viện cần thiết
+├── README.md              # Tài liệu hướng dẫn
+├── Model/                 # Thư mục chứa model và tokenizer
 │   ├── model_cnn_bilstm.h5
 │   └── tokenizer_data.pkl
-├── static/
-│   ├── image
-└── templates/
-    └── index.html
+├── static/               # Thư mục chứa tài nguyên tĩnh
+│   └── image/           # Hình ảnh và assets
+└── templates/           # Thư mục chứa các file HTML
+    ├── index.html      # Trang chủ với chatbot
+    └── dashboard.html  # Trang dashboard phân tích
 ```
 
 ## Chạy ứng dụng

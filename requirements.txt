@@ -1,0 +1,7 @@
+flask
+mysql.connector
+tensorflow
+numpy
+flask_cors
+wordcloud
+nltk
