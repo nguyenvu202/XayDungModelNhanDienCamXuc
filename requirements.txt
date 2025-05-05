@@ -1,5 +1,5 @@
 flask
-mysql.connector
+mysql-connector-python==9.3.0
 tensorflow
 numpy
 flask_cors

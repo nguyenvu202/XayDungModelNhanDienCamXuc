@@ -7,8 +7,10 @@ import logging
 import re
 from collections import Counter
 from nltk import ngrams
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)

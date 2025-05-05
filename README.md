@@ -29,7 +29,7 @@ venv\Scripts\activate
 
 1. **Cài đặt các thư viện Python**:
 ```bash
-pip install 
+pip install -r requirements.txt
 ```
 
 ## Các thư viện cần thiết
