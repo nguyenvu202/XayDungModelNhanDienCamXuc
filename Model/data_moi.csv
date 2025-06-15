@@ -1,0 +1,51 @@
+﻿comment,label,rate
+Chưa oke lắm,NEG,1
+Nhìn rất oke,POS,5
+Dịch vụ fail quá trời,NEG,1
+"Quá nice, mình thích lắm",POS,5
+Không good chút nào,NEG,2
+Mọi thứ đều perfect,POS,5
+"Quá tệ, không oke tí nào",NEG,1
+Oke phết đấy chứ,POS,4
+"Hơi chán, not what I expected",NEG,2
+Pretty ổn cho lần đầu,POS,4
+"Fail toàn tập, không recommend",NEG,1
+"Cũng tạm, not too bad",NEU,3
+Good job đội ngũ support,POS,5
+Not recommend chút nào,NEG,1
+"Rất oke luôn, đáng tiền",POS,5
+"Service rất good, nhân viên nhiệt tình",POS,5
+"Không hài lòng, hơi fail",NEG,2
+"Quá tuyệt, mình cực kì happy",POS,5
+"Bình thường thôi, nothing special",NEU,3
+"Mọi thứ oke, sẽ quay lại",POS,4
+"Không oke chút nào, thất vọng luôn",NEG,1
+"Quá tuyệt, like it so much",POS,5
+Thái độ nhân viên very bad,NEG,1
+"Giao hàng chậm, not happy",NEG,2
+"Giá hợp lý, service oke",POS,4
+Pretty bad experience,NEG,2
+Trải nghiệm rất good,POS,5
+Không tệ nhưng cũng không good,NEU,3
+"Fail nhẹ, nhưng chấp nhận được",NEU,3
+"Hài lòng, sẽ quay lại lần nữa",POS,5
+"Đồ ăn cold, not oke chút nào",NEG,1
+"Amazing place, cực kì chill",POS,5
+Nhân viên không nice tí nào,NEG,2
+"Chất lượng tạm ổn, nothing special",NEU,3
+"So bad, không recommend chút nào",NEG,1
+"Quán này oke đấy, khá ưng",POS,4
+Not really impressive,NEU,3
+"Good vibe, nice decor",POS,5
+"Sản phẩm quá tệ, very disappointed",NEG,1
+Không thấy điểm gì good,NEG,1
+"Cũng được, không quá fail",NEU,3
+"Everything is oke, nhân viên dễ thương",POS,5
+This place is not for me,NEG,2
+"Dịch vụ chuyên nghiệp, very nice",POS,5
+"Giá hơi cao, but chất lượng oke",NEU,3
+Totally worth it,POS,5
+"Không đáng tiền, feel bad",NEG,1
+"Staff helpful, đồ uống ổn",POS,4
+"Not friendly, không recommend",NEG,1
+Rất happy với trải nghiệm lần này,POS,5
